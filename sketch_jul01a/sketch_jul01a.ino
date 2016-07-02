@@ -1,5 +1,7 @@
 #include <Arduboy.h>
 
+#include "SinWave.h"
+
 Arduboy arduboy;
 
 /*
@@ -7,23 +9,33 @@ Arduboy arduboy;
  * "Color" or "value" means choosing whether a pixel is lit or not - if color is 0, the pixel is off (black), if color is 1, the pixel is on (white).
  */
 
-int maxX = 128;
-int maxY = 46;
+static int maxX = 128;
+static int maxY = 46;
 
-int curX, curY;
+static int frameRate = 15;
+
+unsigned long expectedFrameDuration;
+
+int curX, curY, currentTone;
+
+boolean shouldToneBePlaying = false;
 
 void setup() {
   // put your setup code here, to run once:
   arduboy.begin();
-  arduboy.setFrameRate(15);
+  arduboy.setFrameRate(frameRate);
 
   curX = 1;
   curY = 1;
+  
+  currentTone = 0;
+
+  expectedFrameDuration = 1.0 / frameRate;
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  if (!(arduboy.nextFrame())) {
+  if (arduboy.nextFrame()) {
     return;
   }
 
@@ -35,6 +47,20 @@ void loop() {
   increment(&curY, &maxY);
 
   arduboy.display();
+
+  if (arduboy.pressed(A_BUTTON) || arduboy.pressed(B_BUTTON)) {
+    if (shouldToneBePlaying) {
+      resetCurrentTone();
+    }
+    shouldToneBePlaying = !shouldToneBePlaying;
+  }
+
+  if (shouldToneBePlaying) {
+    if (currentTone >= maxSamplesNum) {
+      resetCurrentTone();
+    }
+    arduboy.tunes.tone(sinWave[currentTone++], expectedFrameDuration);
+  }
 }
 
 void writeMessage(int x, int y) {
@@ -48,5 +74,9 @@ void increment(int *current, int *max) {
   } else {
     (*current)++;
   }
+}
+
+void resetCurrentTone() {
+  currentTone = 0;
 }
 

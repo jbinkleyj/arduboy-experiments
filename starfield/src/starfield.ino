@@ -119,8 +119,17 @@ void drawBats() {
 void drawShootyShootyBoom() {
   if (currentShotCooldown > 0) {
     if (currentShotCooldown > 20) {
-      // TODO raycast to enemies
-      arduboy.drawFastHLine(tankX + spriteSizePx, tankY + 4, screenWidth - (tankX + spriteSizePx), WHITE);
+      int laserY = tankY + 4;
+      int laserWidth = screenWidth - (tankX + spriteSizePx);
+
+      for (int i = 0; i <= numBats; i++) {
+        int *spaceBat = spaceBats[i];
+        if (laserY >= spaceBat[1] + 2 && laserY <= spaceBat[1] + 6) {
+          laserWidth = spaceBat[0] - (tankX + spriteSizePx) + 2;
+        }
+      }
+
+      arduboy.drawFastHLine(tankX + spriteSizePx, laserY, laserWidth, WHITE);
       if (currentShotCooldown > 21) {
         arduboy.drawBitmap(tankX + spriteSizePx, tankY, pew[(30 - currentShotCooldown) % 3], spriteSizePx, spriteSizePx, WHITE);
       }

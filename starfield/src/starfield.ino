@@ -1,5 +1,7 @@
 #include <Arduboy.h>
 
+#include "tank.h"
+
 Arduboy arduboy;
 
 /*
@@ -17,16 +19,51 @@ void setup() {
 
 void loop() {
   if (!arduboy.nextFrame()) { return; }
-
-  // put your main code here, to run repeatedly:
   arduboy.clear();
+  handleInput();
+  drawTank();
   drawStarField();
   arduboy.display();
 }
 
-byte stillStar[11][2] = {{84, 9}, {67, 14}, {109, 19}, {27, 24}, {9, 29}, {96, 34}, {31, 39}, {45, 44}, {82, 49}, {19, 54}, {57, 59}};
-byte movingStar[11][2] = {{16, 10}, {125, 15}, {62, 20}, {79, 25}, {115, 30}, {104, 35}, {16, 40}, {117, 45}, {65, 50}, {98, 55}, {23, 60}};
-byte fastMovingStar[11][2] = {{84, 7}, {67, 12}, {109, 17}, {27, 22}, {9, 27}, {96, 32}, {31, 37}, {45, 42}, {82, 47}, {19, 52}, {57, 57}};
+void handleInput() {
+  if (arduboy.pressed(UP_BUTTON)) {
+      arduboy.setCursor(62, 4);
+      arduboy.print(F("up"));
+  }
+
+  if (arduboy.pressed(DOWN_BUTTON)) {
+      arduboy.setCursor(62, 52);
+      arduboy.print(F("down"));
+  }
+
+  if (arduboy.pressed(LEFT_BUTTON)) {
+      arduboy.setCursor(30, 30);
+      arduboy.print(F("left"));
+  }
+
+  if (arduboy.pressed(RIGHT_BUTTON)) {
+      arduboy.setCursor(92, 30);
+      arduboy.print(F("right"));
+  }
+
+  if (arduboy.pressed(A_BUTTON)) {
+      arduboy.setCursor(1, 1);
+      arduboy.print(F("A"));
+  }
+
+  if (arduboy.pressed(B_BUTTON)) {
+      arduboy.setCursor(122, 1);
+      arduboy.print(F("B"));
+  }
+}
+
+void drawTank() {
+}
+
+byte movingStar[11][2] = {{84, 9}, {67, 14}, {109, 19}, {27, 24}, {9, 29}, {96, 34}, {31, 39}, {45, 44}, {82, 49}, {19, 54}, {57, 59}};
+byte fastMovingStar[11][2] = {{16, 10}, {125, 15}, {62, 20}, {79, 25}, {115, 30}, {104, 35}, {16, 40}, {117, 45}, {65, 50}, {98, 55}, {23, 60}};
+byte stillStar[11][2] = {{84, 7}, {67, 12}, {109, 17}, {27, 22}, {9, 27}, {96, 32}, {31, 37}, {45, 42}, {82, 47}, {19, 52}, {57, 57}};
 
 void drawStarField()
 {

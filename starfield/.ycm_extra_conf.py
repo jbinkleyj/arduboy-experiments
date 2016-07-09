@@ -31,13 +31,15 @@ PlatformioAutogen = ".pioenvs/"
 PlatformioArduinoLibs = "~/.platformio/packages/framework-arduinoavr/libraries/"
 
 # Platformio Arduino Core
-## This links to the Platformio Arduino Cores. This provides 
+## This links to the Platformio Arduino Cores. This provides
 ## the core libs, such as Arduino.h and HardwareSerial.h
 PlatformioArduinoCore = "~/.platformio/packages/framework-arduinoavr/cores/arduino/"
 
 # Platformio Arduino Std Libs
 ## Arduino Std libs from .platformio packages. Provides stdlib.h and such.
 PlatformioArduinoSTD = '~/.platformio/packages/toolchain-atmelavr/avr/include'
+
+ArudboyLib = '~/Projects/arduino/libraries/Arduboy/src'
 
 # This is the list of all directories to search for header files.
 # Dirs in this list can be paths relative to this file, absolute
@@ -48,6 +50,7 @@ libDirs = [
            ,PlatformioArduinoCore
            ,PlatformioArduinoLibs
            ,PlatformioArduinoSTD
+           ,ArudboyLib
            ]
 
 flags = [
@@ -102,7 +105,7 @@ def MakeRelativePathsInFlagsAbsolute( flags, working_directory ):
 
         for path, dirs, files in os.walk(libDir):
             # Add to flags if dir contains a header file and is not
-            # one of the metadata dirs (examples and extras). 
+            # one of the metadata dirs (examples and extras).
             if any(IsHeaderFile(x) for x in files) and\
               path.find("examples") is -1 and path.find("extras") is -1:
                 logger.debug("Directory contains header files - %s"%path)

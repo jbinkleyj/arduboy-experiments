@@ -61,6 +61,7 @@ void loop() {
   drawShootyShootyBoom();
   drawBats();
   drawTank();
+  advanceEnemies();
   arduboy.display();
 }
 
@@ -126,18 +127,25 @@ void drawBats() {
       spaceBat->idleAnimationFrame++;
       spaceBat->idleAnimationFrame = spaceBat->idleAnimationFrame % 2;
     }
-    arduboy.drawBitmap(spaceBat->X, spaceBat->Y, bat[spaceBat->idleAnimationFrame], spriteSizePx, spriteSizePx, WHITE);
+
+    if (spaceBat->isActive) {
+      arduboy.drawBitmap(spaceBat->X, spaceBat->Y, bat[spaceBat->idleAnimationFrame], spriteSizePx, spriteSizePx, WHITE);
+    }
 
     // draw explosion over hit bat
     if (currentHitSpaceBat && currentHitSpaceBat->hitAnimationFrame > 0) {
       arduboy.drawBitmap(
           currentHitSpaceBat->X - 4,
           currentHitSpaceBat->Y - 4,
-          boom[shootCooldown - currentHitSpaceBat->hitAnimationFrame * 5],
+          boom[5 - currentHitSpaceBat->hitAnimationFrame],
           16, 16, WHITE
         );
 
       currentHitSpaceBat->hitAnimationFrame--;
+
+      if (currentHitSpaceBat->hitAnimationFrame == 0) {
+        currentHitSpaceBat->isActive = false;
+      }
     }
   }
 }
@@ -172,6 +180,25 @@ void drawShootyShootyBoom() {
     }
 
     currentShotCooldown--;
+  }
+}
+
+void advanceEnemies() {
+  for (int i = 0; i <= numBats; i++) {
+    t_spaceBat *spaceBat = &spaceBats[i];
+    if (arduboy.everyXFrames(10)) {
+      if (spaceBat->isActive) {
+        spaceBat->X--;
+        if (spaceBat->X <= 0) { spaceBat->X = screenWidth; }
+      }
+    }
+
+    if (arduboy.everyXFrames(30)) {
+      if (spaceBat->isActive) {
+        spaceBat->Y++;
+        if (spaceBat->Y > screenHeight) { spaceBat->Y = 0; }
+      }
+    }
   }
 }
 

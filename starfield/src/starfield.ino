@@ -22,6 +22,9 @@ int tankX;
 int tankY;
 int tankCurrentFrame;
 
+const int shootCooldown = 30;
+int currentShotCooldown = 0;
+
 const int numBats = 3;
 // x, y, animationFrame
 int spaceBats[numBats][3] = {{110, 32, 0}, {104, 7, 1}, {90, 42, 1}};
@@ -41,6 +44,7 @@ void loop() {
   arduboy.clear();
   handleInput();
   drawStarField();
+  drawShootyShootyBoom();
   drawBats();
   drawTank();
   arduboy.display();
@@ -83,22 +87,16 @@ void handleInput() {
       }
   }
 
-  if (arduboy.pressed(A_BUTTON)) {
+  if (arduboy.pressed(A_BUTTON) || arduboy.pressed(B_BUTTON)) {
       arduboy.setCursor(1, 1);
-      arduboy.print(F("A"));
-  }
-
-  if (arduboy.pressed(B_BUTTON)) {
-      arduboy.setCursor(122, 1);
-      arduboy.print(F("B"));
+      arduboy.print(F("LASER!"));
+      if (currentShotCooldown == 0 ) {
+        currentShotCooldown = shootCooldown;
+      }
   }
 }
 
 void drawTank() {
-  /* arduboy.drawRect(tankX - 2, tankY - 2, spriteSizePx + 4, spriteSizePx + 4, WHITE); */
-
-  // void drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap, uint8_t w, uint8_t h, uint8_t color);
-
   arduboy.drawBitmap(tankX, tankY, tank[tankCurrentFrame], spriteSizePx, spriteSizePx, WHITE);
 
   if (arduboy.everyXFrames(16)) {
@@ -115,6 +113,20 @@ void drawBats() {
       spaceBat[2] = spaceBat[2] % 2;
     }
     arduboy.drawBitmap(spaceBat[0], spaceBat[1], bat[spaceBat[2]], spriteSizePx, spriteSizePx, WHITE);
+  }
+}
+
+void drawShootyShootyBoom() {
+  if (currentShotCooldown > 0) {
+    if (currentShotCooldown > 20) {
+      // TODO raycast to enemies
+      arduboy.drawFastHLine(tankX + spriteSizePx, tankY + 4, screenWidth - (tankX + spriteSizePx), WHITE);
+      if (currentShotCooldown > 21) {
+        arduboy.drawBitmap(tankX + spriteSizePx, tankY, pew[(30 - currentShotCooldown) % 3], spriteSizePx, spriteSizePx, WHITE);
+      }
+    }
+
+    currentShotCooldown--;
   }
 }
 

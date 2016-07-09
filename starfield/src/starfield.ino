@@ -24,6 +24,7 @@ int tankCurrentFrame;
 
 const int shootCooldown = 30;
 int currentShotCooldown = 0;
+int *currentHitSpaceBat;
 
 const int numBats = 3;
 // x, y, animationFrame
@@ -118,20 +119,33 @@ void drawBats() {
 
 void drawShootyShootyBoom() {
   if (currentShotCooldown > 0) {
+    if (currentShotCooldown == shootCooldown) {
+      currentHitSpaceBat = NULL;
+    }
+
     if (currentShotCooldown > 20) {
       int laserY = tankY + 4;
       int laserWidth = screenWidth - (tankX + spriteSizePx);
 
-      for (int i = 0; i <= numBats; i++) {
-        int *spaceBat = spaceBats[i];
-        if (laserY >= spaceBat[1] + 2 && laserY <= spaceBat[1] + 6) {
-          laserWidth = spaceBat[0] - (tankX + spriteSizePx) + 2;
+      if (!currentHitSpaceBat) {
+        for (int i = 0; i <= numBats; i++) {
+          int *spaceBat = spaceBats[i];
+          if (laserY >= spaceBat[1] + 2 && laserY <= spaceBat[1] + 6) {
+            laserWidth = spaceBat[0] - (tankX + spriteSizePx) + 2;
+            currentHitSpaceBat = spaceBat;
+          }
         }
+      } else {
+        laserWidth = currentHitSpaceBat[0] - (tankX + spriteSizePx) + 2;
       }
 
       arduboy.drawFastHLine(tankX + spriteSizePx, laserY, laserWidth, WHITE);
       if (currentShotCooldown > 21) {
-        arduboy.drawBitmap(tankX + spriteSizePx, tankY, pew[(30 - currentShotCooldown) % 3], spriteSizePx, spriteSizePx, WHITE);
+        arduboy.drawBitmap(tankX + spriteSizePx, tankY, pew[(30 - currentShotCooldown) / 3], spriteSizePx, spriteSizePx, WHITE);
+      }
+
+      if (currentHitSpaceBat && currentShotCooldown > 5) {
+        arduboy.drawBitmap(currentHitSpaceBat[0] - 4, currentHitSpaceBat[1] - 4, boom[(30 - currentShotCooldown) / 5], 16, 16, WHITE);
       }
     }
 

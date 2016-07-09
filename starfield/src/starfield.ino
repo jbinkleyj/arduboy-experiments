@@ -24,6 +24,7 @@ boolean gameStarted = false;
 int tankX;
 int tankY;
 int tankCurrentFrame;
+int score = 0;
 
 const int shootCooldown = 30;
 int currentShotCooldown = 0;
@@ -83,6 +84,7 @@ void loop() {
   drawShootyShootyBoom();
   drawBats();
   drawTank();
+  drawScoreAndSevenYearsAgo();
   advanceEnemies();
   arduboy.display();
 }
@@ -127,6 +129,13 @@ void handleInput() {
         currentShotCooldown = shootCooldown;
       }
   }
+}
+
+void drawScoreAndSevenYearsAgo() {
+  arduboy.setCursor(116, 1);
+  char scoreBuffer[16];
+  sprintf(scoreBuffer, "%d", score);
+  arduboy.print(scoreBuffer);
 }
 
 void drawTank() {
@@ -186,6 +195,7 @@ void drawShootyShootyBoom() {
             laserWidth = spaceBat->X - (tankX + spriteSizePx) + 2;
             spaceBat->hitAnimationFrame = 5;
             currentHitSpaceBat = spaceBat;
+            score++;
           }
         }
       } else {

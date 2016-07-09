@@ -126,7 +126,7 @@ void drawBats() {
       spaceBat->idleAnimationFrame++;
       spaceBat->idleAnimationFrame = spaceBat->idleAnimationFrame % 2;
     }
-    arduboy.drawBitmap(spaceBat->X, spaceBat->Y, bat[spaceBat->Y], spriteSizePx, spriteSizePx, WHITE);
+    arduboy.drawBitmap(spaceBat->X, spaceBat->Y, bat[spaceBat->idleAnimationFrame], spriteSizePx, spriteSizePx, WHITE);
   }
 }
 
@@ -143,7 +143,7 @@ void drawShootyShootyBoom() {
       if (!currentHitSpaceBat) {
         for (int i = 0; i <= numBats; i++) {
           t_spaceBat *spaceBat = &spaceBats[i];
-          if (laserY >= spaceBat->X + 2 && laserY <= spaceBat->X + 6) {
+          if (laserY >= spaceBat->Y + 2 && laserY <= spaceBat->Y + 6) {
             laserWidth = spaceBat->X - (tankX + spriteSizePx) + 2;
             currentHitSpaceBat = spaceBat;
           }
@@ -158,7 +158,7 @@ void drawShootyShootyBoom() {
       }
 
       if (currentHitSpaceBat && currentShotCooldown > 5) {
-        arduboy.drawBitmap(currentHitSpaceBat->X - 4, currentHitSpaceBat->X - 4, boom[(30 - currentShotCooldown) / 5], 16, 16, WHITE);
+        arduboy.drawBitmap(currentHitSpaceBat->X - 4, currentHitSpaceBat->Y - 4, boom[(30 - currentShotCooldown) / 5], 16, 16, WHITE);
       }
     }
 

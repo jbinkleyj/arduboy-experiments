@@ -10,11 +10,21 @@ Arduboy arduboy;
  */
 
 static int frameRate = 60;
+static int screenWidth = 128;
+static int screenHeight = 64;
+
+int tankX;
+int tankY;
+int tankCurrentFrame;
 
 void setup() {
   // put your setup code here, to run once:
   arduboy.begin();
   arduboy.setFrameRate(frameRate);
+
+  tankX = 16;
+  tankY = 48;
+  tankCurrentFrame = 0;
 }
 
 void loop() {
@@ -30,21 +40,37 @@ void handleInput() {
   if (arduboy.pressed(UP_BUTTON)) {
       arduboy.setCursor(62, 4);
       arduboy.print(F("up"));
+
+      if (tankY >= 0) {
+        tankY--;
+      }
   }
 
   if (arduboy.pressed(DOWN_BUTTON)) {
       arduboy.setCursor(62, 52);
       arduboy.print(F("down"));
+
+      if (tankY <= screenHeight) {
+        tankY++;
+      }
   }
 
   if (arduboy.pressed(LEFT_BUTTON)) {
       arduboy.setCursor(30, 30);
       arduboy.print(F("left"));
+
+      if (tankX >= 0) {
+        tankX--;
+      }
   }
 
   if (arduboy.pressed(RIGHT_BUTTON)) {
       arduboy.setCursor(92, 30);
       arduboy.print(F("right"));
+
+      if (tankX <= screenWidth) {
+        tankX++;
+      }
   }
 
   if (arduboy.pressed(A_BUTTON)) {
@@ -59,6 +85,17 @@ void handleInput() {
 }
 
 void drawTank() {
+  int spriteSizePx = 8;
+  /* arduboy.drawRect(tankX - 2, tankY - 2, spriteSizePx + 4, spriteSizePx + 4, WHITE); */
+
+  // void drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap, uint8_t w, uint8_t h, uint8_t color);
+
+  arduboy.drawBitmap(tankX, tankY, tank[tankCurrentFrame], spriteSizePx, spriteSizePx, WHITE);
+
+  if (arduboy.everyXFrames(16)) {
+    tankCurrentFrame++;
+    tankCurrentFrame = tankCurrentFrame % 3;
+  }
 }
 
 byte movingStar[11][2] = {{84, 9}, {67, 14}, {109, 19}, {27, 24}, {9, 29}, {96, 34}, {31, 39}, {45, 44}, {82, 49}, {19, 54}, {57, 59}};

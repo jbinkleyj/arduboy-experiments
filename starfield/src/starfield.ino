@@ -184,7 +184,7 @@ void drawShootyShootyBoom() {
     }
 
     if (currentShotCooldown > 20) {
-      int laserY = tankY + 4;
+      int laserY = tankY + 3;
       int laserWidth = screenWidth - (tankX + spriteSizePx);
 
       if (!currentHitSpaceBat) {

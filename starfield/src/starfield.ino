@@ -51,6 +51,8 @@ void setup() {
   tankX = 16;
   tankY = 48;
   tankCurrentFrame = 0;
+  // TODO this is KEY to overwriting the arduboy bullshit
+  // Serial.begin(9600);
 }
 
 void loop() {
@@ -68,7 +70,6 @@ void loop() {
 void handleInput() {
   if (arduboy.pressed(UP_BUTTON)) {
       arduboy.setCursor(62, 4);
-      arduboy.print(F("up"));
 
       if (tankY >= 0) {
         tankY--;
@@ -77,7 +78,6 @@ void handleInput() {
 
   if (arduboy.pressed(DOWN_BUTTON)) {
       arduboy.setCursor(62, 52);
-      arduboy.print(F("down"));
 
       if (tankY <= screenHeight) {
         tankY++;
@@ -86,7 +86,6 @@ void handleInput() {
 
   if (arduboy.pressed(LEFT_BUTTON)) {
       arduboy.setCursor(30, 30);
-      arduboy.print(F("left"));
 
       if (tankX >= 0) {
         tankX--;
@@ -95,7 +94,6 @@ void handleInput() {
 
   if (arduboy.pressed(RIGHT_BUTTON)) {
       arduboy.setCursor(92, 30);
-      arduboy.print(F("right"));
 
       if (tankX <= screenWidth) {
         tankX++;
@@ -163,6 +161,7 @@ void drawShootyShootyBoom() {
       if (!currentHitSpaceBat) {
         for (int i = 0; i <= numBats; i++) {
           t_spaceBat *spaceBat = &spaceBats[i];
+          if (!spaceBat->isActive) { continue; }
           if (laserY >= spaceBat->Y + 2 && laserY <= spaceBat->Y + 6) {
             laserWidth = spaceBat->X - (tankX + spriteSizePx) + 2;
             spaceBat->hitAnimationFrame = 5;

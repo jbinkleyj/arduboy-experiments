@@ -1,6 +1,9 @@
 #include <Arduboy.h>
 
 #include "tank.h"
+#include "bat.h"
+#include "pew.h"
+#include "boom.h"
 
 Arduboy arduboy;
 
@@ -13,9 +16,15 @@ static int frameRate = 60;
 static int screenWidth = 128;
 static int screenHeight = 64;
 
+int spriteSizePx = 8;
+
 int tankX;
 int tankY;
 int tankCurrentFrame;
+
+const int numBats = 3;
+// x, y, animationFrame
+int spaceBats[numBats][3] = {{110, 32, 0}, {104, 7, 1}, {90, 42, 1}};
 
 void setup() {
   // put your setup code here, to run once:
@@ -31,8 +40,9 @@ void loop() {
   if (!arduboy.nextFrame()) { return; }
   arduboy.clear();
   handleInput();
-  drawTank();
   drawStarField();
+  drawBats();
+  drawTank();
   arduboy.display();
 }
 
@@ -85,7 +95,6 @@ void handleInput() {
 }
 
 void drawTank() {
-  int spriteSizePx = 8;
   /* arduboy.drawRect(tankX - 2, tankY - 2, spriteSizePx + 4, spriteSizePx + 4, WHITE); */
 
   // void drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap, uint8_t w, uint8_t h, uint8_t color);
@@ -95,6 +104,17 @@ void drawTank() {
   if (arduboy.everyXFrames(16)) {
     tankCurrentFrame++;
     tankCurrentFrame = tankCurrentFrame % 3;
+  }
+}
+
+void drawBats() {
+  for (int i = 0; i < numBats; i++) {
+    int *spaceBat = spaceBats[i];
+    if (arduboy.everyXFrames(24)) {
+      spaceBat[2]++;
+      spaceBat[2] = spaceBat[2] % 2;
+    }
+    arduboy.drawBitmap(spaceBat[0], spaceBat[1], bat[spaceBat[2]], spriteSizePx, spriteSizePx, WHITE);
   }
 }
 

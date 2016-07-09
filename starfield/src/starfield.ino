@@ -4,6 +4,7 @@
 #include "bat.h"
 #include "pew.h"
 #include "boom.h"
+#include "banner.h"
 
 Arduboy arduboy;
 
@@ -17,6 +18,8 @@ static int screenWidth = 128;
 static int screenHeight = 64;
 
 int spriteSizePx = 8;
+
+boolean gameStarted = false;
 
 int tankX;
 int tankY;
@@ -43,6 +46,12 @@ t_spaceBat spaceBats[numBats] = {
 
 t_spaceBat *currentHitSpaceBat;
 
+// The year is 20XX
+// War is beginning
+// Dracula takes to the stars
+// Man your tank for great honor
+// ... (boop boop boop)
+// ...and survival
 void setup() {
   // put your setup code here, to run once:
   arduboy.begin();
@@ -58,6 +67,17 @@ void setup() {
 void loop() {
   if (!arduboy.nextFrame()) { return; }
   arduboy.clear();
+
+  if (!gameStarted) {
+    arduboy.drawBitmap(0, 0, banner[0], screenWidth, screenHeight, WHITE);
+    arduboy.display();
+
+    if (arduboy.pressed(A_BUTTON) || arduboy.pressed(B_BUTTON)) {
+      gameStarted = true;
+    }
+    return;
+  }
+
   handleInput();
   drawStarField();
   drawShootyShootyBoom();
